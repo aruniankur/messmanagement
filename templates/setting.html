@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css"
+      integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+      crossorigin="anonymous"
+    />
+    <script
+      src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+      integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"
+    ></script>
+    <title>Setting</title>
+    <style>
+      /* Body styles */
+      .horizontalnavbar {
+        background-color: #374785;
+        color: white;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px;
+        width: 100%;
+        position: fixed; /* Fix the navbar */
+        top: 0; /* Position it at the top */
+        left: 0; /* Align it to the left */
+        z-index: 1000; /* Set a higher z-index to ensure it's above other elements */
+      }
+
+      .left-section,
+      .right-section {
+        display: flex;
+        align-items: center;
+      }
+
+      .logo-image {
+        margin-right: 10px;
+      }
+
+      .logo-image,
+      h2,
+      h3 {
+        font-family: "Arial", sans-serif;
+      }
+
+      .horizontalnavbar h2 {
+        font-size: 1.2rem;
+        margin: 0;
+      }
+
+      .horizontalnavbar h3 {
+        margin: 0;
+        left: 40px;
+      }
+
+      .horizontalnavbar a {
+        color: white;
+        text-decoration: none;
+        transition: color 0.3s;
+      }
+
+      .horizontalnavbar a:hover {
+        color: #ffd700;
+      }
+
+      .verticalnavbar {
+        background-color: #2c3e50;
+        color: white;
+        width: 20%;
+        position: fixed; /* Fixed positioning */
+        top: 70px; /* Stick to the top of the viewport */
+        bottom: 0px; /* Take up the full height of the viewport */
+        padding: 25px;
+        box-shadow: 2px 0px 5px rgba(0, 0, 0, 0.2); /* Add a shadow for a better look */
+      }
+
+      .verticalnavbar h1 {
+        font-size: 1.5rem;
+        margin-bottom: 20px;
+      }
+
+      .verticalnavbar ul {
+        list-style: none;
+        padding: 0;
+      }
+
+      .verticalnavbar li {
+        margin-bottom: 10px;
+      }
+
+      .verticalnavbar a {
+        color: white;
+        text-decoration: none;
+        transition: color 0.3s;
+      }
+
+      .verticalnavbar a:hover {
+        color: #ffd700; /* Hover color */
+      }
+      .datacontainer {
+        background-color: #ffffff;
+        margin-left: 20%;
+        padding: 20px;
+        font-family: Arial, sans-serif;
+      }
+
+      .datacontainer h1 {
+        font-size: 1.8rem;
+        margin-bottom: 20px;
+      }
+
+      .datacontainer h2 {
+        font-size: 1.4rem;
+        margin-top: 20px;
+      }
+
+      .datacontainer div {
+        margin-top: 10px;
+      }
+
+      .datacontainer ul {
+        list-style: none;
+        padding: 0;
+      }
+
+      .datacontainer li {
+        margin-bottom: 10px;
+      }
+
+      .datacontainer table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+        font-size: 14px;
+      }
+
+      .datacontainer th,
+      .datacontainer td {
+        border: 1px solid #ccc;
+        padding: 10px;
+        text-align: center;
+      }
+
+      .datacontainer th {
+        background-color: #374785;
+        color: white;
+      }
+
+      .datacontainer .delete-button {
+        padding: 5px 10px;
+        background-color: #dc3545;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+
+      .datacontainer .delete-button:hover {
+        background-color: #c82333;
+      }
+
+      .datacontainer #show-signup-button,
+      .datacontainer #hide-signup-button {
+        padding: 8px 15px;
+        background-color: #374785;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        margin-top: 10px;
+      }
+
+      .datacontainer #show-signup-button:hover,
+      .datacontainer #hide-signup-button:hover {
+        background-color: #293961;
+      }
+
+      .signup-dialog {
+        display: none;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: #ffffff;
+        padding: 20px;
+        border: 1px solid #ccc;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="horizontalnavbar">
+      <div class="left-section">
+        <img
+          src="{{ url_for('static', filename='images/mmmlogo.jpeg') }}"
+          alt="MMM logo"
+          class="logo-image"
+          width="50"
+          height="50"
+        />
+        <h3>MMM Hall of Residence</h3>
+      </div>
+      <div class="right-section">
+        <h2><a href="/logout">Logout</a></h2>
+        <img
+          src="{{ url_for('static', filename='images/iit-kharagpur.png') }}"
+          alt="IIT KGP logo"
+          class="logo-image"
+          width="50"
+          height="50"
+        />
+      </div>
+    </div>
+
+    <div>
+      <ul class="verticalnavbar">
+        <h1>mess management</h1>
+        {% for item in navbard %}
+        <li><a href="{{ item.url }}">{{ item.label }}</a></li>
+        {% endfor %}
+      </ul>
+    </div>
+    <div class="datacontainer">
+      <h1>Setting Page</h1>
+      {% with messages = get_flashed_messages() %} {% if messages %} {% for
+      message in messages %}
+      <div>{{ message }}</div>
+      {% endfor %} {% endif %} {% endwith %}
+      <div>
+        <h2>signup</h2>
+        <!-- Signup Form Dialog -->
+        <div id="signup-dialog" class="signup-dialog">
+          <h2>Sign Up</h2>
+          <form method="POST" action="/add_user">
+            <label for="name">Name:</label>
+            <input type="text" name="name" required /><br />
+
+            <label for="username">Username:</label>
+            <input type="text" name="username" required /><br />
+
+            <label for="password">Password:</label>
+            <input type="password" name="password" required /><br />
+
+            <label for="email">Email:</label>
+            <input type="email" name="email" /><br />
+
+            <label for="role">Role:</label>
+            <input type="text" name="role" required /><br />
+
+            <label for="category">Category:</label>
+            <select name="category" required>
+              <option value="M">wardens</option>
+              <option value="C">Students</option>
+              <option value="S">workers</option></select
+            ><br />
+
+            <input type="submit" value="Add User" />
+          </form>
+          <button id="hide-signup-button">hide Signup Form</button>
+        </div>
+
+        <button id="show-signup-button">Show Signup Form</button>
+      </div>
+      <div>
+        <h2>Delete C and S Users</h2>
+        <table class="user-table">
+          <thead>
+            <tr>
+              <th>Username</th>
+              <th>Name</th>
+              <th>Role</th>
+              <th>Category</th>
+              <th>Delete</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for user in c_s_users %}
+            <tr>
+              <td>{{ user.username }}</td>
+              <td>{{ user.name }}</td>
+              <td>{{ user.role }}</td>
+              <td>{{ user.category }}</td>
+              <td>
+                <form method="POST" action="{{ url_for('delete_user', user_id=user.id) }}">
+                  <button type="submit" class="delete-button">Delete</button>
+                </form>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      
+      <h2>Login History</h2>
+      <table>
+        <tr>
+          <th>Name</th>
+          <th>Login Time</th>
+          <th>Role</th>
+          <th>category</th>
+        </tr>
+        {% for login in login_history %}
+        <tr>
+          <td>{{ login.name }}</td>
+          <td>{{ login.login_time }}</td>
+          <td>{{ login.role }}</td>
+          <td>{{ login.category }}</td>
+        </tr>
+        {% endfor %}
+      </table>
+    </div>
+    <script>
+      const showSignupButton = document.getElementById("show-signup-button");
+      const signupDialog = document.getElementById("signup-dialog");
+      showSignupButton.addEventListener("click", () => {
+        signupDialog.style.display = "block";
+      });
+      const hideSignupButton = document.getElementById("hide-signup-button");
+      hideSignupButton.addEventListener("click", () => {
+        signupDialog.style.display = "none";
+      });
+    </script>
+  </body>
+</html>

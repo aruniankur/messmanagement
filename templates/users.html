@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>User List</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css"
+      integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+      crossorigin="anonymous"
+    />
+    <script
+      src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+      integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"
+    ></script>
+    <style>
+      /* Body styles */
+      .horizontalnavbar {
+        background-color: #374785;
+        color: white;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px;
+        width: 100%;
+        position: fixed; /* Fix the navbar */
+        top: 0; /* Position it at the top */
+        left: 0; /* Align it to the left */
+        z-index: 1000; /* Set a higher z-index to ensure it's above other elements */
+      }
+
+      .left-section,
+      .right-section {
+        display: flex;
+        align-items: center;
+      }
+
+      .logo-image {
+        margin-right: 10px;
+      }
+
+      .logo-image,
+      h2,
+      h3 {
+        font-family: "Arial", sans-serif;
+      }
+
+      .horizontalnavbar h2 {
+        font-size: 1.2rem;
+        margin: 0;
+      }
+
+      .horizontalnavbar h3 {
+        margin: 0;
+        left: 40px;
+      }
+
+      .horizontalnavbar a {
+        color: white;
+        text-decoration: none;
+        transition: color 0.3s;
+      }
+
+      .horizontalnavbar a:hover {
+        color: #ffd700;
+      }
+
+      .verticalnavbar {
+        background-color: #2c3e50;
+        color: white;
+        width: 20%;
+        position: fixed; /* Fixed positioning */
+        top: 70px; /* Stick to the top of the viewport */
+        bottom: 0px; /* Take up the full height of the viewport */
+        padding: 25px;
+        box-shadow: 2px 0px 5px rgba(0, 0, 0, 0.2); /* Add a shadow for a better look */
+      }
+
+      .verticalnavbar h1 {
+        font-size: 1.5rem;
+        margin-bottom: 20px;
+      }
+
+      .verticalnavbar ul {
+        list-style: none;
+        padding: 0;
+      }
+
+      .verticalnavbar li {
+        margin-bottom: 10px;
+      }
+
+      .verticalnavbar a {
+        color: white;
+        text-decoration: none;
+        transition: color 0.3s;
+      }
+
+      .verticalnavbar a:hover {
+        color: #ffd700; /* Hover color */
+      }
+
+      /* General styling for container */
+      .datacontainer {
+        background-color: #ffffff;
+        margin-left: 20%;
+        padding: 20px;
+        font-family: Arial, sans-serif;
+      }
+      
+      /* Styling for different dialog boxes */
+      .dialog-box {
+        display: none;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: #ffffff;
+        padding: 20px;
+        border: 1px solid #ccc;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+      }
+      
+      /* Styling for the student list table */
+      #dataTable {
+        width: 100%;
+        margin-top: 20px;
+        border-collapse: collapse;
+      }
+      
+      #dataTable th,
+      #dataTable td {
+        border: 1px solid #ccc;
+        padding: 8px;
+        text-align: center;
+      }
+      
+      #dataTable th {
+        background-color: #374785;
+        color: white;
+      }
+      
+      /* Styling for buttons and inputs */
+      button,
+      input[type="text"],
+      input[type="date"],
+      select,
+      textarea {
+        padding: 8px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        margin-bottom: 10px;
+      }
+      
+      button {
+        background-color: #374785;
+        color: white;
+        border: none;
+        cursor: pointer;
+      }
+      
+      button:hover {
+        background-color: #293961;
+      }
+      
+      /* Styling for the hide button */
+      .hide-button {
+        display: block;
+        margin-top: 10px;
+        text-align: center;
+      }      
+
+      .offStudentDialog {
+        display: none;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: #ffffff;
+        padding: 20px;
+        border: 1px solid #ccc;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+      }
+
+      .onStudentDialog {
+        display: none;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: #ffffff;
+        padding: 20px;
+        border: 1px solid #ccc;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+      }
+
+      .addstudentcss {
+        display: none;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: #ffffff;
+        padding: 20px;
+        border: 1px solid #ccc;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="horizontalnavbar">
+      <div class="left-section">
+        <img
+          src="{{ url_for('static', filename='images/mmmlogo.jpeg') }}"
+          alt="MMM logo"
+          class="logo-image"
+          width="50"
+          height="50"
+        />
+        <h3>MMM Hall of Residence</h3>
+      </div>
+      <div class="right-section">
+        <h2><a href="/logout">Logout</a></h2>
+        <img
+          src="{{ url_for('static', filename='images/iit-kharagpur.png') }}"
+          alt="IIT KGP logo"
+          class="logo-image"
+          width="50"
+          height="50"
+        />
+      </div>
+    </div>
+
+
+    <div>
+      <ul class="verticalnavbar">
+        <h1>mess management</h1>
+        {% for item in navbard %}
+        <li><a href="{{ item.url }}">{{ item.label }}</a></li>
+        {% endfor %}
+      </ul>
+    </div>
+
+<div class = "datacontainer">
+    <h1>Student List</h1>
+    {% with messages = get_flashed_messages() %} {% if messages %} {% for
+    message in messages %}
+    <div>{{ message }}</div>
+    {% endfor %} {% endif %} {% endwith %}
+    <button id="addstudentbutton">Add Student</button> <br />
+    <label for="search">Search:</label>
+    <input
+      type="text"
+      id="search"
+      name="search"
+      oninput="searchData()"
+      placeholder="Search by Name or Roll Number or Amount"
+    />
+    <table id="dataTable">
+      <thead>
+        <tr>
+          <th>id</th>
+          <th>Name</th>
+          <th>Roll number</th>
+          <th>room number</th>
+          <th>category</th>
+          <th>active</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for user in users %}
+        <tr>
+          <td>{{ user.student_id }}</td>
+          <td>{{ user.student_name }}</td>
+          <td>{{ user.roll_no }}</td>
+          <td>{{ user.room_number }}</td>
+          <td>{{ user.category }}</td>
+          <td>
+            <button
+              onclick="openStudentDialog({{ user.student_id }}, '{{ user.active }}')"
+            >
+              {{user.active}}
+            </button>
+          </td>
+          <td>
+            <form method="POST" action="/delete_student/{{user.student_id}}">
+              <input type="submit" value="Delete" />
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <div id="offStudentDialog" class="offStudentDialog">
+      <form id="offStudentForm" method="POST" action="">
+        <label for="start_date">Start Date:</label>
+        <input type="date" id="start_date" name="start_date" required /><br />
+
+        <label for="end_date">End Date:</label>
+        <input type="date" id="end_date" name="end_date" required /><br />
+
+        <label for="description">Description:</label>
+        <textarea id="description" name="description" required></textarea><br />
+        <button id="hide-signup-button">hide Form</button>
+        <input type="submit" value="Submit" />
+      </form>
+    </div>
+    <div id="onStudentDialog" class="onStudentDialog">
+      <!-- Corrected class name -->
+      <h3>do you want to activate this student?</h3>
+      <form id="onStudentForm" method="POST" action="">
+        <button id="hide-signup2-button">hide Form</button>
+        <input type="submit" value="Submit" />
+      </form>
+    </div>
+    <div id="addstudent" class="addstudentcss">
+      <h2>Add New Student</h2>
+      <form method="POST" action="/add_student">
+        <label for="name">Name:</label>
+        <input type="text" name="name" required /><br />
+
+        <label for="roll_no">Roll Number:</label>
+        <input type="text" name="roll_no" required /><br />
+
+        <label for="room_number">Room Number:</label>
+        <input type="text" name="room_number" required /><br />
+
+        <label for="category">Category:</label>
+        <select name="category" required>
+          <option value="V">V</option>
+          <option value="NV">NV</option></select
+        ><br />
+
+        <input type="submit" value="Add Student" />
+      </form>
+
+      <h2>Upload CSV</h2>
+      <form method="POST" action="/upload_csv" enctype="multipart/form-data">
+        <input type="file" name="csv_file" required />
+        <input type="submit" value="Upload" />
+      </form>
+      <button id="hidestudentbutton">Hide</button>
+    </div>
+  <div>
+    <script>
+      function openStudentDialog(studentId, activeStatus) {
+        if (activeStatus === "True") {
+          const dialog = document.getElementById("offStudentDialog");
+          const form = document.getElementById("offStudentForm");
+          form.action = `/student_active/${studentId}`;
+          dialog.style.display = "block";
+        } else {
+          const dialog = document.getElementById("onStudentDialog");
+          const form = document.getElementById("onStudentForm");
+          form.action = `/student_active/${studentId}`;
+          dialog.style.display = "block";
+        }
+      }
+
+      const hideSignupButton = document.getElementById("hide-signup-button");
+      const offStudentDialog = document.getElementById("offStudentDialog");
+      hideSignupButton.addEventListener("click", () => {
+        offStudentDialog.style.display = "none";
+      });
+
+      const hideSignupButton2 = document.getElementById("hide-signup2-button");
+      const onStudentDialog = document.getElementById("onStudentDialog");
+      hideSignupButton2.addEventListener("click", () => {
+        onStudentDialog.style.display = "none";
+      });
+
+      const showStudentButton = document.getElementById("addstudentbutton");
+      const addStudentDialog = document.getElementById("addstudent");
+      showStudentButton.addEventListener("click", () => {
+        addStudentDialog.style.display = "block";
+      });
+
+      const hideStudentButton = document.getElementById("hidestudentbutton");
+      hideStudentButton.addEventListener("click", () => {
+        addStudentDialog.style.display = "none";
+      });
+
+      const search_input = document.getElementById("search");
+      const dataTableBody = document.querySelector("#dataTable tbody");
+      function searchData() {
+        const searchValue = search_input.value.toLowerCase();
+
+        const rows = dataTableBody.getElementsByTagName("tr");
+
+        for (const row of rows) {
+          const rowName = row.cells[1].textContent.toLowerCase();
+          const rowRollNumber = row.cells[2].textContent.toLowerCase();
+
+          if (
+            rowName.includes(searchValue) ||
+            rowRollNumber.includes(searchValue)
+          ) {
+            row.style.display = "";
+          } else {
+            row.style.display = "none";
+          }
+        }
+      }
+    </script>
+  </body>
+</html>
