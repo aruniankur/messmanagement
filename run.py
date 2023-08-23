@@ -23,7 +23,6 @@ app.config['SECRET_KEY'] = 'your_secret_key_here'
 app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {"pool_pre_ping": True}
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///project.db"
 #app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get('DATABASE_URL')
-#postgresql://controller:vpM5lUMYNtxRp8NWVTUM7beDBt6uG1bt@dpg-cjd8f9gq339s73fnaftg-a.singapore-postgres.render.com/messmanagement_o93s
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 db = SQLAlchemy(app)
 login_manager = LoginManager(app)
