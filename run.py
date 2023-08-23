@@ -21,8 +21,8 @@ from datetime import date
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'your_secret_key_here'
 app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {"pool_pre_ping": True}
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///project.db"
-#app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get('DATABASE_URL')
+#app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///project.db"
+app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get('DATABASE_URL')
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 db = SQLAlchemy(app)
 login_manager = LoginManager(app)
