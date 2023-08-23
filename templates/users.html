@@ -26,19 +26,30 @@
       crossorigin="anonymous"
     ></script>
     <style>
-      /* Body styles */
+      body {
+        background-image: url("{{ url_for("static", filename="images/bg2.svg") }}");
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-position: center;
+        background-attachment: fixed;
+        min-height: 100vh; /* Ensure the background covers the entire viewport height */
+      }
+
       .horizontalnavbar {
-        background-color: #374785;
-        color: white;
         display: flex;
         justify-content: space-between;
         align-items: center;
         padding: 10px;
+        color: black; /* Set text color to white for better contrast */
         width: 100%;
         position: fixed; /* Fix the navbar */
         top: 0; /* Position it at the top */
         left: 0; /* Align it to the left */
-        z-index: 1000; /* Set a higher z-index to ensure it's above other elements */
+        z-index: 1000;
+        background: linear-gradient(
+          yellow 60%,
+          rgba(0, 0, 0, 0)
+        ); /* Gradient background */
       }
 
       .left-section,
@@ -49,26 +60,19 @@
 
       .logo-image {
         margin-right: 10px;
+        margin-left: 10px;
       }
 
       .logo-image,
+      h1,
       h2,
       h3 {
         font-family: "Arial", sans-serif;
-      }
-
-      .horizontalnavbar h2 {
-        font-size: 1.2rem;
-        margin: 0;
-      }
-
-      .horizontalnavbar h3 {
-        margin: 0;
-        left: 40px;
+        font-size: 3rem;
       }
 
       .horizontalnavbar a {
-        color: white;
+        color: black;
         text-decoration: none;
         transition: color 0.3s;
       }
@@ -78,19 +82,26 @@
       }
 
       .verticalnavbar {
-        background-color: #2c3e50;
+        backdrop-filter: blur(15px) saturate(180%);
+        -webkit-backdrop-filter: blur(15px) saturate(180%);
+        background-color: rgba(17, 25, 40, 0.75);
+        border: 1px solid rgba(255, 255, 255, 0.125);
+        height: 100vh;
+        padding: 20px;
+        position: fixed;
+        left: 0;
+        top: 13vh;
+        border-top-right-radius: 40px;
         color: white;
         width: 20%;
-        position: fixed; /* Fixed positioning */
-        top: 70px; /* Stick to the top of the viewport */
-        bottom: 0px; /* Take up the full height of the viewport */
         padding: 25px;
-        box-shadow: 2px 0px 5px rgba(0, 0, 0, 0.2); /* Add a shadow for a better look */
+        box-shadow: 2px 0px 5px rgba(0, 0, 0, 0.2);
       }
 
       .verticalnavbar h1 {
-        font-size: 1.5rem;
+        font-size: 2rem;
         margin-bottom: 20px;
+        text-align: center;
       }
 
       .verticalnavbar ul {
@@ -100,26 +111,46 @@
 
       .verticalnavbar li {
         margin-bottom: 10px;
+        font-size: 1.2rem;
       }
 
       .verticalnavbar a {
         color: white;
         text-decoration: none;
-        transition: color 0.3s;
+        display: inline-block;
+        padding: 8px 12px;
       }
 
       .verticalnavbar a:hover {
-        color: #ffd700; /* Hover color */
+        color: #ffd700;
+        background-color: #333;
+        border-radius: 12px;
+      }
+
+      .verticalnavbar ul {
+        list-style-type: none;
+        padding: 0;
+      }
+
+      .verticalnavbar li {
+        margin-bottom: 10px;
+      }
+
+      .verticalnavbar a {
+        text-decoration: none;
+        color: #fff;
       }
 
       /* General styling for container */
       .datacontainer {
-        background-color: #ffffff;
-        margin-left: 20%;
+        margin-left: 21%;
+        margin-right: 1%;
+        margin-top: 12vh;
+        margin-bottom: 1%;
         padding: 20px;
         font-family: Arial, sans-serif;
       }
-      
+
       /* Styling for different dialog boxes */
       .dialog-box {
         display: none;
@@ -131,27 +162,114 @@
         padding: 20px;
         border: 1px solid #ccc;
         box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+        border-radius: 12px;
       }
-      
+
+      .addstudentcss {
+        background-color: #fff;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        padding: 10px;
+        box-shadow: 0 0 18px rgba(0, 0, 0, 0.1);
+        width: 350px;
+        margin: 0 auto;
+        text-align: center;
+      }
+
+      .addstudentcss h2 {
+        font-size: 1.4rem;
+      }
+
+      .addstudentcss label {
+        display: block;
+        font-weight: bold;
+        margin-top: 5px;
+      }
+
+      .addstudentcss input[type="text"],
+      .addstudentcss select,
+      .addstudentcss input[type="file"] {
+        width: 85%;
+        padding: 8px;
+        margin: 2px 0;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+      }
+
+      .addstudentcss select {
+        height: 20px;
+      }
+
+      .addstudentcss input[type="submit"] {
+        background-color: #374785;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        padding: 10px 15px;
+        margin-top: 5px;
+        cursor: pointer;
+      }
+      .addstudentcss input[type="submit"]:hover {
+        background-color: #293961;
+      }
+
+      #hidestudentbutton {
+        background-color: #000000;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        padding: 8px 15px;
+        margin-top: 2px;
+        cursor: pointer;
+      }
+
+      #hidestudentbutton:hover {
+        background-color: #e0e0e0;
+      }
+
       /* Styling for the student list table */
       #dataTable {
         width: 100%;
         margin-top: 20px;
-        border-collapse: collapse;
+        border-collapse: separate;
+        border-spacing: 1px;
       }
-      
+
       #dataTable th,
       #dataTable td {
-        border: 1px solid #ccc;
+        border: none; /* Adjust border style if needed */
         padding: 8px;
         text-align: center;
+        border-radius: 3px;
       }
-      
+
       #dataTable th {
         background-color: #374785;
         color: white;
       }
-      
+
+      #dataTable tr {
+        background-color: #f5f5f5; /* Alternate row background color */
+      }
+
+      #dataTable tr:nth-child(even) {
+        background-color: #e0e0e0; /* Even row background color */
+      }
+
+      #dataTable button {
+        padding: 8px 8px;
+        background-color: #374785;
+        height: 35px;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        font-size: 0.9rem;
+        cursor: pointer;
+      }
+
+      #dataTable button:hover {
+        background-color: #293961;
+      }
+
       /* Styling for buttons and inputs */
       button,
       input[type="text"],
@@ -163,24 +281,24 @@
         border-radius: 4px;
         margin-bottom: 10px;
       }
-      
+
       button {
         background-color: #374785;
         color: white;
         border: none;
         cursor: pointer;
       }
-      
+
       button:hover {
         background-color: #293961;
       }
-      
+
       /* Styling for the hide button */
       .hide-button {
         display: block;
         margin-top: 10px;
         text-align: center;
-      }      
+      }
 
       .offStudentDialog {
         display: none;
@@ -226,135 +344,139 @@
           src="{{ url_for('static', filename='images/mmmlogo.jpeg') }}"
           alt="MMM logo"
           class="logo-image"
-          width="50"
-          height="50"
+          width="80"
+          height="80"
         />
         <h3>MMM Hall of Residence</h3>
       </div>
       <div class="right-section">
-        <h2><a href="/logout">Logout</a></h2>
+        <h3>IIT Kharagpur</h3>
         <img
           src="{{ url_for('static', filename='images/iit-kharagpur.png') }}"
           alt="IIT KGP logo"
           class="logo-image"
-          width="50"
-          height="50"
+          width="80"
+          height="80"
         />
       </div>
     </div>
 
-
     <div>
       <ul class="verticalnavbar">
-        <h1>mess management</h1>
+        <h1>Mess Management</h1>
         {% for item in navbard %}
         <li><a href="{{ item.url }}">{{ item.label }}</a></li>
         {% endfor %}
       </ul>
     </div>
 
-<div class = "datacontainer">
-    <h1>Student List</h1>
-    {% with messages = get_flashed_messages() %} {% if messages %} {% for
-    message in messages %}
-    <div>{{ message }}</div>
-    {% endfor %} {% endif %} {% endwith %}
-    <button id="addstudentbutton">Add Student</button> <br />
-    <label for="search">Search:</label>
-    <input
-      type="text"
-      id="search"
-      name="search"
-      oninput="searchData()"
-      placeholder="Search by Name or Roll Number or Amount"
-    />
-    <table id="dataTable">
-      <thead>
-        <tr>
-          <th>id</th>
-          <th>Name</th>
-          <th>Roll number</th>
-          <th>room number</th>
-          <th>category</th>
-          <th>active</th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for user in users %}
-        <tr>
-          <td>{{ user.student_id }}</td>
-          <td>{{ user.student_name }}</td>
-          <td>{{ user.roll_no }}</td>
-          <td>{{ user.room_number }}</td>
-          <td>{{ user.category }}</td>
-          <td>
-            <button
-              onclick="openStudentDialog({{ user.student_id }}, '{{ user.active }}')"
-            >
-              {{user.active}}
-            </button>
-          </td>
-          <td>
-            <form method="POST" action="/delete_student/{{user.student_id}}">
-              <input type="submit" value="Delete" />
-            </form>
-          </td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-    <div id="offStudentDialog" class="offStudentDialog">
-      <form id="offStudentForm" method="POST" action="">
-        <label for="start_date">Start Date:</label>
-        <input type="date" id="start_date" name="start_date" required /><br />
+    <div class="datacontainer">
+      <h1>Student List</h1>
+      {% with messages = get_flashed_messages() %} {% if messages %} {% for
+      message in messages %}
+      <div>{{ message }}</div>
+      {% endfor %} {% endif %} {% endwith %}
+      <button id="addstudentbutton">Add Student</button> <br />
+      <br />
+      <label for="search"><h4>Search:</h4></label>
+      <input
+        type="text"
+        id="search"
+        name="search"
+        oninput="searchData()"
+        placeholder="Search by Name or Roll Number or Amount"
+      />
+      <table id="dataTable">
+        <thead>
+          <tr>
+            <th>S.No.</th>
+            <th>Name</th>
+            <th>Roll Number</th>
+            <th>Room Number</th>
+            <th>Category</th>
+            <th>Active</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for user in users %}
+          <tr>
+            <td>{{ user.student_id }}</td>
+            <td>{{ user.student_name }}</td>
+            <td>{{ user.roll_no }}</td>
+            <td>{{ user.room_number }}</td>
+            <td>{{ user.category }}</td>
+            <td>
+              <button
+                onclick="openStudentDialog({{ user.student_id }}, '{{ user.active }}')"
+              >
+                {{user.active}}
+              </button>
+            </td>
+            <td>
+              <form
+                method="POST"
+                action="/delete_student/{{user.student_id}}"
+                onsubmit="return confirm('Are you sure you want to delete this student?');"
+              >
+                <input type="submit" value="Delete" />
+              </form>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      <div id="offStudentDialog" class="offStudentDialog">
+        <form id="offStudentForm" method="POST" action="">
+          <label for="start_date">Start Date:</label>
+          <input type="date" id="start_date" name="start_date" required /><br />
 
-        <label for="end_date">End Date:</label>
-        <input type="date" id="end_date" name="end_date" required /><br />
+          <label for="end_date">End Date:</label>
+          <input type="date" id="end_date" name="end_date" required /><br />
 
-        <label for="description">Description:</label>
-        <textarea id="description" name="description" required></textarea><br />
-        <button id="hide-signup-button">hide Form</button>
-        <input type="submit" value="Submit" />
-      </form>
+          <label for="description">Description:</label>
+          <textarea id="description" name="description" required></textarea
+          ><br />
+          <button id="hide-signup-button">hide Form</button>
+          <input type="submit" value="Submit" />
+        </form>
+      </div>
+      <div id="onStudentDialog" class="onStudentDialog">
+        <!-- Corrected class name -->
+        <h3>do you want to activate this student?</h3>
+        <form id="onStudentForm" method="POST" action="">
+          <button id="hide-signup2-button">hide Form</button>
+          <input type="submit" value="Submit" />
+        </form>
+      </div>
+      <div id="addstudent" class="addstudentcss">
+        <h2>Add New Student</h2>
+        <form method="POST" action="/add_student">
+          <label for="name">Name:</label>
+          <input type="text" name="name" required /><br />
+
+          <label for="roll_no">Roll Number:</label>
+          <input type="text" name="roll_no" required /><br />
+
+          <label for="room_number">Room Number:</label>
+          <input type="text" name="room_number" required /><br />
+
+          <label for="category">Category:</label>
+          <select name="category" required>
+            <option value="V">V</option>
+            <option value="NV">NV</option></select
+          ><br />
+          <input type="submit" value="Add Student" />
+        </form>
+
+        <h4>Upload CSV</h4>
+        <form method="POST" action="/upload_csv" enctype="multipart/form-data">
+          <input type="file" name="csv_file" required />
+          <input type="submit" value="Upload" />
+        </form>
+        <button id="hidestudentbutton">Hide</button>
+      </div>
     </div>
-    <div id="onStudentDialog" class="onStudentDialog">
-      <!-- Corrected class name -->
-      <h3>do you want to activate this student?</h3>
-      <form id="onStudentForm" method="POST" action="">
-        <button id="hide-signup2-button">hide Form</button>
-        <input type="submit" value="Submit" />
-      </form>
-    </div>
-    <div id="addstudent" class="addstudentcss">
-      <h2>Add New Student</h2>
-      <form method="POST" action="/add_student">
-        <label for="name">Name:</label>
-        <input type="text" name="name" required /><br />
-
-        <label for="roll_no">Roll Number:</label>
-        <input type="text" name="roll_no" required /><br />
-
-        <label for="room_number">Room Number:</label>
-        <input type="text" name="room_number" required /><br />
-
-        <label for="category">Category:</label>
-        <select name="category" required>
-          <option value="V">V</option>
-          <option value="NV">NV</option></select
-        ><br />
-
-        <input type="submit" value="Add Student" />
-      </form>
-
-      <h2>Upload CSV</h2>
-      <form method="POST" action="/upload_csv" enctype="multipart/form-data">
-        <input type="file" name="csv_file" required />
-        <input type="submit" value="Upload" />
-      </form>
-      <button id="hidestudentbutton">Hide</button>
-    </div>
-  <div>
     <script>
       function openStudentDialog(studentId, activeStatus) {
         if (activeStatus === "True") {

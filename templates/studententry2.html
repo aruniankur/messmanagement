@@ -28,6 +28,15 @@
     ></script>
     <style>
       /* Default styles for both mobile and desktop */
+      body {
+        background-image: url("{{ url_for("static", filename="images/bg2.svg") }}");
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-position: center;
+        background-attachment: fixed;
+        min-height: 100vh; /* Ensure the background covers the entire viewport height */
+      }
+      
       .horizontalnavbar {
         background-color: #374785;
         color: white;
@@ -61,11 +70,6 @@
       .horizontalnavbar h2 {
         font-size: 1.2rem;
         margin: 0;
-      }
-      
-      .horizontalnavbar h3 {
-        margin: 0;
-        left: 40px;
       }
       
       .horizontalnavbar a {
@@ -186,8 +190,8 @@
           src="{{ url_for('static', filename='images/mmmlogo.jpeg') }}"
           alt="MMM logo"
           class="logo-image"
-          width="50"
-          height="50"
+          width="60"
+          height="60"
         />
         <h3>MMM Hall of Residence</h3>
       </div>
@@ -197,8 +201,8 @@
           src="{{ url_for('static', filename='images/iit-kharagpur.png') }}"
           alt="IIT KGP logo"
           class="logo-image"
-          width="50"
-          height="50"
+          width="60"
+          height="60"
         />
       </div>
     </div>

@@ -26,19 +26,30 @@
       crossorigin="anonymous"
     ></script>
     <style>
-      /* Body styles */
+      body {
+        background-image: url("{{ url_for("static", filename="images/bg2.svg") }}");
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-position: center;
+        background-attachment: fixed;
+        min-height: 100vh; /* Ensure the background covers the entire viewport height */
+      }
+
       .horizontalnavbar {
-        background-color: #374785;
-        color: white;
         display: flex;
         justify-content: space-between;
         align-items: center;
         padding: 10px;
+        color: black; /* Set text color to white for better contrast */
         width: 100%;
         position: fixed; /* Fix the navbar */
         top: 0; /* Position it at the top */
         left: 0; /* Align it to the left */
-        z-index: 1000; /* Set a higher z-index to ensure it's above other elements */
+        z-index: 1000;
+        background: linear-gradient(
+          yellow 60%,
+          rgba(0, 0, 0, 0)
+        ); /* Gradient background */
       }
 
       .left-section,
@@ -49,26 +60,19 @@
 
       .logo-image {
         margin-right: 10px;
+        margin-left: 10px;
       }
 
       .logo-image,
+      h1,
       h2,
       h3 {
         font-family: "Arial", sans-serif;
-      }
-
-      .horizontalnavbar h2 {
-        font-size: 1.2rem;
-        margin: 0;
-      }
-
-      .horizontalnavbar h3 {
-        margin: 0;
-        left: 40px;
+        font-size: 3rem;
       }
 
       .horizontalnavbar a {
-        color: white;
+        color: black;
         text-decoration: none;
         transition: color 0.3s;
       }
@@ -78,19 +82,26 @@
       }
 
       .verticalnavbar {
-        background-color: #2c3e50;
+        backdrop-filter: blur(15px) saturate(180%);
+        -webkit-backdrop-filter: blur(15px) saturate(180%);
+        background-color: rgba(17, 25, 40, 0.75);
+        border: 1px solid rgba(255, 255, 255, 0.125);
+        height: 100vh;
+        padding: 20px;
+        position: fixed;
+        left: 0;
+        top: 13vh;
+        border-top-right-radius: 40px;
         color: white;
         width: 20%;
-        position: fixed; /* Fixed positioning */
-        top: 70px; /* Stick to the top of the viewport */
-        bottom: 0px; /* Take up the full height of the viewport */
         padding: 25px;
-        box-shadow: 2px 0px 5px rgba(0, 0, 0, 0.2); /* Add a shadow for a better look */
+        box-shadow: 2px 0px 5px rgba(0, 0, 0, 0.2);
       }
 
       .verticalnavbar h1 {
-        font-size: 1.5rem;
+        font-size: 2rem;
         margin-bottom: 20px;
+        text-align: center;
       }
 
       .verticalnavbar ul {
@@ -100,39 +111,54 @@
 
       .verticalnavbar li {
         margin-bottom: 10px;
+        font-size: 1.2rem;
       }
 
       .verticalnavbar a {
         color: white;
         text-decoration: none;
-        transition: color 0.3s;
+        display: inline-block;
+        padding: 8px 12px;
       }
 
       .verticalnavbar a:hover {
-        color: #ffd700; /* Hover color */
+        color: #ffd700;
+        background-color: #333;
+        border-radius: 12px;
+      }
+
+      .verticalnavbar ul {
+        list-style-type: none;
+        padding: 0;
+      }
+
+      .verticalnavbar li {
+        margin-bottom: 10px;
+      }
+
+      .verticalnavbar a {
+        text-decoration: none;
+        color: #fff;
       }
 
       /* General styling for container */
       .datacontainer {
-        background-color: #ffffff;
-        margin-left: 20%;
-        padding: 20px;
-        font-family: Arial, sans-serif;
-      }
-      .datacontainer {
-        background-color: #ffffff;
-        margin-left: 20%;
+        margin-left: 21%;
+        margin-right: 1%;
+        margin-top: 12vh;
+        margin-bottom: 1%;
         padding: 20px;
         font-family: Arial, sans-serif;
       }
 
       .datacontainer h1 {
         font-size: 1.8rem;
-        margin-bottom: 20px;
       }
 
       .datacontainer .formentry {
         margin-top: 20px;
+        margin-left: 35vh;
+        width:400px;
       }
 
       .datacontainer label {
@@ -143,7 +169,7 @@
       .datacontainer input[type="text"],
       .datacontainer input[type="date"],
       .datacontainer select {
-        width: 100%;
+        width:400px;
         padding: 8px;
         margin-bottom: 10px;
         border: 1px solid #ccc;
@@ -168,7 +194,9 @@
         margin-top: 20px;
         padding: 10px;
         border: 1px solid #ccc;
+        margin-left: 35vh;
         border-radius: 4px;
+        width:400px;
       }
     </style>
   </head>
@@ -179,25 +207,24 @@
           src="{{ url_for('static', filename='images/mmmlogo.jpeg') }}"
           alt="MMM logo"
           class="logo-image"
-          width="50"
-          height="50"
+          width="80"
+          height="80"
         />
         <h3>MMM Hall of Residence</h3>
       </div>
       <div class="right-section">
-        <h2><a href="/logout">Logout</a></h2>
+        <h3>IIT Kharagpur</h3>
         <img
           src="{{ url_for('static', filename='images/iit-kharagpur.png') }}"
           alt="IIT KGP logo"
           class="logo-image"
-          width="50"
-          height="50"
+          width="80"
+          height="80"
         />
       </div>
     </div>
-    <div>
       <ul class="verticalnavbar">
-        <h1>mess management</h1>
+        <h1>Mess Management</h1>
         {% for item in navbard %}
         <li><a href="{{ item.url }}">{{ item.label }}</a></li>
         {% endfor %}
@@ -205,7 +232,8 @@
     </div>
 
     <div class="datacontainer">
-      <h1>student entry</h1>
+      <h1>Student Entry</h1>
+      <p>This page ensure if any student miss to mark , it can be done manually from here.</p>
       <form id="textBoxForm" class="formentry">
         <label for="userInput">Enter Roll Number</label>
         <input type="text" id="userInput" name="userInput" autofocus /><br />

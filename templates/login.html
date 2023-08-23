@@ -6,19 +6,27 @@
     <title>Login</title>
     <style>
         body {
+            background-image: url('{{ url_for('static', filename='images/bg2.svg') }}');
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
+            background-attachment: fixed;
+            min-height: 100vh; /* Ensure the background covers the entire viewport height */
             font-family: Arial, sans-serif;
-            background-color: #343a40;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
             margin: 0;
         }
 
         .login-container {
-            background-color: #f8f9fa;
+            backdrop-filter: blur(15px) saturate(180%);
+            -webkit-backdrop-filter: blur(15px) saturate(180%);
+            background-color: rgba(17, 25, 40, 0.75);
+            border-radius: 32px;
+            border: 1px solid rgba(255, 255, 255, 0.125);
             border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            box-shadow: 4px 4px 4px rgba(0, 0, 0, 0.7);
             padding: 20px;
             width: 250px;
             height: 300px;
@@ -28,7 +36,7 @@
 
         .login-container h1 {
             margin-bottom: 20px;
-            color: #343a40;
+            color: white;
         }
 
         .login-form {
@@ -39,7 +47,8 @@
         .form-label {
             font-weight: bold;
             margin-bottom: 6px;
-            color: #343a40;
+            font-size: 20px;
+            color: white;
         }
 
         .form-input {
@@ -106,10 +115,10 @@
             {% endif %}
         {% endwith %}
         <form class="login-form" method="post">
-            <label class="form-label" for="username">Username:</label>
+            <label class="form-label" for="username">Username</label>
             <input class="form-input" type="text" name="username" id="username" required>
 
-            <label class="form-label" for="password">Password:</label>
+            <label class="form-label" for="password">Password</label>
             <input class="form-input" type="password" name="password" id="password" required>
 
             <button class="login-button" type="submit">Login</button>

@@ -3,20 +3,26 @@ from flask_login import LoginManager, UserMixin, login_user, login_required, log
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 from sqlalchemy import Enum
+import pytz
 import csv
 import os
+import csv
+import io
 from sqlalchemy import func, extract
 from flask_wtf import FlaskForm
 from wtforms import SubmitField, StringField, PasswordField, SelectField
 from wtforms.validators import DataRequired, Email
 from wtforms.validators import DataRequired
 import datetime
+from apscheduler.schedulers.background import BackgroundScheduler
+from datetime import date
 
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'your_secret_key_here'
 app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {"pool_pre_ping": True}
-app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get('DATABASE_URL')
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///project.db"
+#app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get('DATABASE_URL')
 #postgresql://controller:vpM5lUMYNtxRp8NWVTUM7beDBt6uG1bt@dpg-cjd8f9gq339s73fnaftg-a.singapore-postgres.render.com/messmanagement_o93s
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 db = SQLAlchemy(app)
@@ -119,6 +125,21 @@ def login():
 # ----------------------------------------------------------------
 
 
+scheduler = BackgroundScheduler()
+scheduler.start()
+def update_student_status():
+    today = date.today()
+    holiday_infos = HolidayInfo.query.filter_by(end_date=today).all()
+    for holiday_info in holiday_infos:
+        student = Student.query.get(holiday_info.student_id)
+        if student:
+            student.active = True
+            db.session.commit()
+
+# Schedule the update function to run daily
+scheduler.add_job(update_student_status, 'interval', days=1)
+
+
 class ClearLoginHistoryForm(FlaskForm):
     submit = SubmitField('Clear Login History')
 
@@ -206,11 +227,11 @@ def getnavbar():
         data = {'message': 'Hello Master from Flask!'}
         navigation_data = [
             {'url': '/home', 'label': 'Home'},
-            {'url': '/users', 'label': 'User Page'},
+            {'url': '/users', 'label': 'Student Page'},
             {'url': '/consumption', 'label': 'Consumption Page'},
             {'url': '/personal', 'label': 'Personal Page'},
-            {'url': '/setting', 'label': 'setting'},
-            {'url': '/studententry', 'label': 'studententry'},
+            {'url': '/setting', 'label': 'Settings'},
+            {'url': '/studententry', 'label': 'Student Entry'},
             {'url': '/logout', 'label': 'Logout'},
         ]
     elif role == 'C':
@@ -253,12 +274,14 @@ def add_student():
 @app.route('/delete_student/<int:user_id>', methods=['POST'])
 @login_required
 def delete_student(user_id):
-    food_consumptions = FoodConsumption.query.filter_by(
-        student_id=user_id).all()
+    food_consumptions = FoodConsumption.query.filter_by(student_id=user_id).all()
     for food_consumption in food_consumptions:
         db.session.delete(food_consumption)
-    user = Student.query.get_or_404(user_id)
-    db.session.delete(user)
+    holiday_infos = HolidayInfo.query.filter_by(student_id=user_id).all()
+    for holiday_info in holiday_infos:
+        db.session.delete(holiday_info)
+    student = Student.query.get_or_404(user_id)
+    db.session.delete(student)
     db.session.commit()
     return redirect(url_for('list_users'))
 
@@ -307,35 +330,32 @@ def student_active(student_id):
 @login_required
 def upload():
     if request.method == 'POST':
-        csv_file = request.files['csv_file']  # Check the key name here
+        csv_file = request.files['csv_file'] 
 
         if not csv_file:
             return "No file provided."
-        # Save the CSV file to the server (optional)
-        csv_file.save("uploaded.csv")
-        # Read the CSV file and insert data into the database
-        with open("uploaded.csv", "r") as csvfile:
-            csvreader = csv.DictReader(csvfile)
-            for row in csvreader:
-                roll_no = row['roll_no']
-                existing_student = Student.query.filter_by(
-                    roll_no=roll_no).first()
-                if existing_student:
-                    # If a student with the same roll number exists, update the data
-                    existing_student.student_name = row['\ufeffname']
-                    existing_student.room_number = row['room_number']
-                    existing_student.category = row['category']
-                else:
-                    # If no student with the same roll number exists, create a new entry
-                    new_student = Student(
-                        student_name=row['\ufeffname'],
-                        roll_no=roll_no,
-                        room_number=row['room_number'],
-                        category=row['category']
-                    )
-                    db.session.add(new_student)
+        csv_data = csv_file.read().decode('utf-8')
+        csvreader = csv.DictReader(io.StringIO(csv_data))
+        
+        for row in csvreader:
+            roll_no = row['roll_no']
+            existing_student = Student.query.filter_by(roll_no=roll_no).first()
+            if existing_student:
+                existing_student.student_name = row['\ufeffname']
+                existing_student.room_number = row['room_number']
+                existing_student.category = row['category']
+            else:
+                # If no student with the same roll number exists, create a new entry
+                new_student = Student(
+                    student_name=row['\ufeffname'],
+                    roll_no=roll_no,
+                    room_number=row['room_number'],
+                    category=row['category']
+                )
+                db.session.add(new_student)
 
         db.session.commit()
+        
     return redirect(url_for('list_users'))
 
 # ----------------------------------------------------------------
@@ -425,14 +445,16 @@ def process_text():
 
 
 def get_meal_from_time():
-    time = datetime.datetime.now().time()
-    if time >= datetime.time(7, 0) and time <= datetime.time(9, 0):
+    india_tz = pytz.timezone('Asia/Kolkata')
+    time = datetime.datetime.now(india_tz).time()
+    print(time)
+    if time >= datetime.time(6, 45) and time <= datetime.time(9, 30):
         return 'breakfast'
-    elif time >= datetime.time(12, 0) and time <= datetime.time(14, 0):
+    elif time >= datetime.time(11, 50) and time <= datetime.time(14, 15):
         return 'lunch'
     elif time >= datetime.time(15, 50) and time <= datetime.time(18, 15):
         return 'snacks'
-    elif time >= datetime.time(19, 0) and time <= datetime.time(21, 0):
+    elif time >= datetime.time(18, 50) and time <= datetime.time(21, 20):
         return 'dinner'
     else:
         return 'Unknown'
@@ -513,6 +535,8 @@ def get_data1():
     start_date = request.args.get("start_date")
     end_date = request.args.get("end_date")
     id = request.args.get("id")
+    if not id:
+        id = 0
     try:
         start_date = datetime.datetime.strptime(start_date, "%Y-%m-%d").date()
         end_date = datetime.datetime.strptime(end_date, "%Y-%m-%d").date()
@@ -544,6 +568,8 @@ def get_data2():
     start_date = request.args.get("start_date")
     end_date = request.args.get("end_date")
     id = request.args.get("id")
+    if not id:
+        id = 0
     try:
         # Convert the start_date and end_date strings to datetime objects
         start_date = datetime.datetime.strptime(start_date, "%Y-%m-%d").date()
@@ -609,19 +635,19 @@ def process_data():
 
 def calculate_weekday_totals(start_date, end_date):
     # Run the SQL query using SQLAlchemy to get the total food consumed for each weekday
+    print("working")
     results = (
-        db.session.query(
-            # 0 for Sunday, 1 for Monday, etc.
-            func.strftime('%w', FoodConsumption.consumption_date).label(
-                "weekday"),
-            func.sum(FoodConsumption.breakfast_amt).label("breakfast_total"),
-            func.sum(FoodConsumption.lunch_amt).label("lunch_total"),
-            func.sum(FoodConsumption.snack_amt).label("snacks_total"),
-            func.sum(FoodConsumption.dinner_amt).label("dinner_total"),
-        )
-        .filter(FoodConsumption.consumption_date.between(start_date, end_date))
-        .group_by("weekday")
-        .all()
+    db.session.query(
+        # 0 for Sunday, 1 for Monday, etc.
+        func.extract('dow', FoodConsumption.consumption_date).label("weekday"),
+        func.sum(FoodConsumption.breakfast_amt).label("breakfast_total"),
+        func.sum(FoodConsumption.lunch_amt).label("lunch_total"),
+        func.sum(FoodConsumption.snack_amt).label("snacks_total"),
+        func.sum(FoodConsumption.dinner_amt).label("dinner_total"),
+    )
+    .filter(FoodConsumption.consumption_date.between(start_date, end_date))
+    .group_by(func.extract('dow', FoodConsumption.consumption_date))
+    .all()
     )
 
     # Convert the query results to a dictionary for each weekday
