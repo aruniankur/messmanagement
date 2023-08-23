@@ -29,26 +29,29 @@
     <style>
       /* Default styles for both mobile and desktop */
       body {
-        background-image: url("{{ url_for("static", filename="images/bg2.svg") }}");
+        background-image: linear-gradient(to top, #6bc9d1, #7bcde6, #96d0f5, #b4d1fd, #d2d3ff, #d5d8ff, #d8dcff, #dce1ff, #cfe8ff, #c2f0ff, #baf7ff, #bbfcf8);
         background-size: cover;
         background-repeat: no-repeat;
         background-position: center;
         background-attachment: fixed;
         min-height: 100vh; /* Ensure the background covers the entire viewport height */
       }
-      
+
       .horizontalnavbar {
-        background-color: #374785;
-        color: white;
         display: flex;
         justify-content: space-between;
         align-items: center;
         padding: 10px;
+        color: black; /* Set text color to white for better contrast */
         width: 100%;
-        position: fixed;
-        top: 0;
-        left: 0;
+        position: fixed; /* Fix the navbar */
+        top: 0; /* Position it at the top */
+        left: 0; /* Align it to the left */
         z-index: 1000;
+        background: linear-gradient(
+          #BBFCF8 80%,
+          rgba(0, 0, 0, 0)
+        ); 
       }
       
       .left-section,
