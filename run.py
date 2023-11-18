@@ -1,28 +1,26 @@
-from flask import Flask, render_template, request, redirect, url_for, jsonify, flash
+from flask import Flask, render_template, request, redirect, url_for, jsonify, flash, session
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
-from sqlalchemy import Enum
+from sqlalchemy import Enum,func, extract
 import pytz
 import csv
 import os
-import csv
 import io
-from sqlalchemy import func, extract
 from flask_wtf import FlaskForm
 from wtforms import SubmitField, StringField, PasswordField, SelectField
 from wtforms.validators import DataRequired, Email
-from wtforms.validators import DataRequired
 import datetime
 from apscheduler.schedulers.background import BackgroundScheduler
 from datetime import date
 
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'your_secret_key_here'
+app.config['SECRET_KEY'] = '122qkwkkskdvmvVHJVvkhhjBH2Y87OLwe2skslDKD'
 app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {"pool_pre_ping": True}
-#app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///project.db"
-app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get('DATABASE_URL')
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///project.db"
+#app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get('DATABASE_URL')
+#postgres://mmm:hv5vl3yZMMy8KdD0vsnckWaqJAz55v7j@dpg-clb3pdu16hkc7382602g-a.singapore-postgres.render.com/messmanage2
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 db = SQLAlchemy(app)
 login_manager = LoginManager(app)
@@ -108,8 +106,12 @@ def login():
         user = User.query.filter_by(username=username).first()
 
         if user and user.password == password:
+            #print(user.category)
+            session['username'] = username
+            session['category'] = user.category
+            session['id'] = user.id
             login_user(user)
-            login_detail = LoginDetail(user_id=current_user.id)
+            login_detail = LoginDetail(user_id=user.id)
             db.session.add(login_detail)
             db.session.commit()
             if user.category == 'S':
@@ -159,7 +161,7 @@ class SignupForm(FlaskForm):
 def add_user():
     form = SignupForm()
     email = request.form['email']
-    print(email)
+    #print(email)
     new_user = User(
         username=form.username.data,
         password=form.password.data,
@@ -168,7 +170,7 @@ def add_user():
         role=form.role.data,
         category=form.category.data
     )
-    print(new_user)
+    #print(new_user)
     db.session.add(new_user)
     db.session.commit()
     flash('User created successfully!', 'success')
@@ -178,15 +180,16 @@ def add_user():
 @app.route('/setting', methods=['GET', 'POST'])
 @login_required
 def setting():
-    if current_user.category == 'M':
+    if 'username' in session and session["category"] == 'M':
+        #if current_user.category == 'M':
         form = SignupForm()
         login_history = LoginDetail.query.join(User).add_columns(
             User.name, LoginDetail.login_time, User.role, User.category).order_by(LoginDetail.login_time.desc()).limit(20).all()
         form2 = ClearLoginHistoryForm()
         c_s_users = User.query.filter(User.category.in_(['C', 'S'])).all()
-        print(c_s_users)
+        #print(c_s_users)
         if form2.validate_on_submit():
-            LoginDetail.query.filter_by(user_id=current_user.id).delete()
+            LoginDetail.query.filter_by(user_id=session["id"]).delete()
             db.session.commit()
             flash('Login history has been cleared.', 'success')
             return redirect(url_for('setting'))
@@ -214,13 +217,18 @@ def delete_user(user_id):
 @login_required
 def logout():
     logout_user()
+    session.pop('username', None)
+    session.pop('category', None)
     return redirect(url_for('login'))
 
 # ----------------------------------------------------------------
 
 
 def getnavbar():
-    role = current_user.category
+    role = "S"
+    if 'username' in session:
+        role = session["category"]
+        print(role)
     navigation_data = []
     if role == 'M':
         data = {'message': 'Hello Master from Flask!'}
@@ -248,11 +256,12 @@ def getnavbar():
 @app.route('/users')
 @login_required
 def list_users():
-    if current_user.category == 'M':
+    if 'username' in session and session["category"] == 'M':
+        #if current_user.category == 'M':
         users = Student.query.all()
         return render_template('users.html', users=users, navbard=getnavbar())
     else:
-        logout_user()  # Make sure you have imported and set up the logout_user function
+        logout_user() 
         return redirect(url_for('login'))
 
 
@@ -363,7 +372,8 @@ def upload():
 @app.route('/studententry')
 @login_required
 def index():
-    if current_user.category == 'M':
+    if 'username' in session and session["category"] == 'M':
+        #if current_user.category == 'M':
         return render_template('submitstu.html', navbard=getnavbar())
     else:
         logout_user()  # Make sure you have imported and set up the logout_user function
@@ -402,14 +412,16 @@ def process_text():
                 student_id=student.student_id, consumption_date=date_input).first()
             if existing_record:
                 # Update the meal value based on the selected option
-                if meal_select == 'breakfast':
-                    existing_record.breakfast_amt = 1
-                elif meal_select == 'lunch':
-                    existing_record.lunch_amt = 1
-                elif meal_select == 'snacks':
-                    existing_record.snack_amt = 1
-                elif meal_select == 'dinner':
-                    existing_record.dinner_amt = 1
+                # if meal_select == 'breakfast':
+                #     existing_record.breakfast_amt = 1
+                # elif meal_select == 'lunch':
+                #     existing_record.lunch_amt = 1
+                # elif meal_select == 'snacks':
+                #     existing_record.snack_amt = 1
+                # elif meal_select == 'dinner':
+                #     existing_record.dinner_amt = 1
+                return jsonify({'error': 'Student already done'})
+                
             else:
                 # Create a new record for the student and date
                 new_record = FoodConsumption(
@@ -446,7 +458,7 @@ def process_text():
 def get_meal_from_time():
     india_tz = pytz.timezone('Asia/Kolkata')
     time = datetime.datetime.now(india_tz).time()
-    print(time)
+    #print(time)
     if time >= datetime.time(6, 45) and time <= datetime.time(9, 30):
         return 'breakfast'
     elif time >= datetime.time(11, 50) and time <= datetime.time(14, 15):
@@ -634,7 +646,7 @@ def process_data():
 
 def calculate_weekday_totals(start_date, end_date):
     # Run the SQL query using SQLAlchemy to get the total food consumed for each weekday
-    print("working")
+    #print("working")
     results = (
     db.session.query(
         # 0 for Sunday, 1 for Monday, etc.
@@ -674,4 +686,4 @@ def get_day_of_week(weekday):
 
 
 if __name__ == '__main__':
-    app.run(dubug=True)
+    app.run()
