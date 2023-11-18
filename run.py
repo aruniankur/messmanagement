@@ -471,13 +471,13 @@ def get_meal_from_time():
     india_tz = pytz.timezone('Asia/Kolkata')
     time = datetime.datetime.now(india_tz).time()
     #print(time)
-    if time >= datetime.time(6, 45) and time <= datetime.time(9, 30):
+    if time >= datetime.time(6, 30) and time <= datetime.time(10, 30):
         return 'breakfast'
-    elif time >= datetime.time(11, 50) and time <= datetime.time(14, 15):
+    elif time >= datetime.time(11, 30) and time <= datetime.time(14, 30):
         return 'lunch'
     elif time >= datetime.time(15, 50) and time <= datetime.time(18, 15):
         return 'snacks'
-    elif time >= datetime.time(18, 50) and time <= datetime.time(21, 20):
+    elif time >= datetime.time(18, 30) and time <= datetime.time(23, 00):
         return 'dinner'
     else:
         return 'Unknown'
