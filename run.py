@@ -219,6 +219,7 @@ def logout():
     logout_user()
     session.pop('username', None)
     session.pop('category', None)
+    session.pop('id', None)
     return redirect(url_for('login'))
 
 # ----------------------------------------------------------------
