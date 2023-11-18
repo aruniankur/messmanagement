@@ -412,16 +412,27 @@ def process_text():
             existing_record = FoodConsumption.query.filter_by(
                 student_id=student.student_id, consumption_date=date_input).first()
             if existing_record:
-                # Update the meal value based on the selected option
-                # if meal_select == 'breakfast':
-                #     existing_record.breakfast_amt = 1
-                # elif meal_select == 'lunch':
-                #     existing_record.lunch_amt = 1
-                # elif meal_select == 'snacks':
-                #     existing_record.snack_amt = 1
-                # elif meal_select == 'dinner':
-                #     existing_record.dinner_amt = 1
-                return jsonify({'error': 'Student already done'})
+            #Update the meal value based on the selected option
+                if meal_select == 'breakfast':
+                    if existing_record.breakfast_amt == 1:
+                        return jsonify({'error': 'Student already done'})
+                    else:
+                        existing_record.breakfast_amt = 1
+                elif meal_select == 'lunch':
+                    if existing_record.lunch_amt == 1:
+                        return jsonify({'error': 'Student already done'})
+                    else:
+                        existing_record.lunch_amt = 1
+                elif meal_select == 'snacks':
+                    if existing_record.snack_amt == 1:
+                        return jsonify({'error': 'Student already done'})
+                    else:
+                        existing_record.snack_amt = 1
+                elif meal_select == 'dinner':
+                    if existing_record.dinner_amt == 1:
+                        return jsonify({'error': 'Student already done'})
+                    else:
+                        existing_record.dinner_amt = 1
                 
             else:
                 # Create a new record for the student and date
