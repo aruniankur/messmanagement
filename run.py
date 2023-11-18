@@ -18,8 +18,8 @@ from datetime import date
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '122qkwkkskdvmvVHJVvkhhjBH2Y87OLwe2skslDKD'
 app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {"pool_pre_ping": True}
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///project.db"
-#app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get('DATABASE_URL')
+#app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///project.db"
+app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get('DATABASE_URL')
 #postgres://mmm:hv5vl3yZMMy8KdD0vsnckWaqJAz55v7j@dpg-clb3pdu16hkc7382602g-a.singapore-postgres.render.com/messmanage2
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 db = SQLAlchemy(app)
