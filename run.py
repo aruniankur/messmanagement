@@ -216,7 +216,7 @@ def delete_user(user_id):
 @app.route('/logout')
 @login_required
 def logout():
-    logout_user()
+    #logout_user()
     session.pop('username', None)
     session.pop('category', None)
     session.pop('id', None)
